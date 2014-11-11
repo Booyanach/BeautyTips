@@ -157,16 +157,20 @@ jQuery.bt = {version: '0.9.7'};
       }
       else if (opts.trigger.length > 1 && opts.trigger[0] != opts.trigger[1]) {
         $(this)
-          .bind(opts.trigger[0], function() {
+          .off(opts.trigger[0])
+          .on(opts.trigger[0], function() {
             this.btOn();
           })
-          .bind(opts.trigger[1], function() {
+          .off(opts.trigger[1])
+          .on(opts.trigger[1], function() {
             this.btOff();
           });
       }
       else {
         // toggle using the same event
-        $(this).bind(opts.trigger[0], function() {
+        $(this)
+        .off(opts.trigger[0])
+        .on(opts.trigger[0], function() {
           if ($(this).hasClass('bt-active')) {
             this.btOff();
           }
@@ -335,6 +339,13 @@ jQuery.bt = {version: '0.9.7'};
           var pos = $(this).btPosition();
           var top = numb(pos.top) + numb($(this).css('margin-top')) - shadowShiftY; // IE can return 'auto' for margins
           var left = numb(pos.left) + numb($(this).css('margin-left')) - shadowShiftX;
+          
+          // Override the default behavior for when the element is inside a dialog
+          if ($(this).parents('.ui-dialog').length) {
+              top = top + offsetParent.offset().top;      // Calculate the top
+              left = left + offsetParent.offset().left;   // Calculate the left
+              offsetParent = $('body');                   // Tooltip should not be bound by the dialog window
+          }
         }
 
         var width = $(this).btOuterWidth();
@@ -1084,7 +1095,7 @@ jQuery.bt = {version: '0.9.7'};
     if (!$(e.target).parents().andSelf().filter('.bt-wrapper, .bt-active').length && jQuery.bt.vars.clickAnywhereStack.length) {
       // if clicked element isn't inside tip, close tips in stack
       $(jQuery.bt.vars.clickAnywhereStack).btOff();
-      $(document).unbind('click', jQuery.bt.docClick);
+      $(document).off('click', jQuery.bt.docClick);
     }
   }; // </ docClick() >
   
