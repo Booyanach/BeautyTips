@@ -1,1 +1,3 @@
+<h2>This version is modified to work with jQuery 1.9+ and 2.x.</h2>
+
 Check out the http://dillon-sellars.github.com/BeautyTips/[demo page].
